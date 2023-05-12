@@ -130,7 +130,7 @@ class Hex2NameColor(serializers.Field):
             raise serializers.ValidationError('Для этого цвета нет имени')
         return data
 
-
+"""http://foodgram.example.org/media/recipes/images/image.jpeg"""
 class Base64ImageField(serializers.ImageField):
     """Сериализатор фото в рецептах."""
 
