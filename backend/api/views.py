@@ -1,26 +1,26 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from users.models import Subscribe, User
 
 from api.filters import RecipeFilter
 from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
-from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
-                             RecipeInfaSerializer, RecipeSerializer,
-                             ShoppingCartSerializer, SubscribeSerializer,
+from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
+                             RecipeSerializer, SubscribeSerializer,
                              TagSerializer, UsersSerializer)
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                            Tag)
-from users.models import Subscribe, User
 
 """User"""
 
+
 class UsersViewSet(UserViewSet):
-    """Вьюсет для валидации, создания и удаления подписки."""
+    """Вьюсет для создания/удаления подписки."""
 
     queryset = User.objects.all()
     serializer_class = UsersSerializer
@@ -50,6 +50,14 @@ class UsersViewSet(UserViewSet):
                                              author=author)
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        subscriptions = Subscribe.objects.filter(
+            user_id=self.request.user
+            ).values_list('author_id', flat=True)
+        context['subscriptions'] = set(subscriptions)
+        return context
 
     @action(
         detail=False,
@@ -88,13 +96,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorReadOnly]
     pagination_class = LimitPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('is_favorited', 'is_in_shopping_cart')
     filterset_class = RecipeFilter
 
     def valid_create(self, model, user, pk):
-        if model.objects.filter(user=user, recipe__id=pk).exists():
-            return Response({'errors': 'Рецепт уже добавлен'},
-                            status=status.HTTP_400_BAD_REQUEST)
         recipe = get_object_or_404(Recipe, id=pk)
         model.objects.create(user=user, recipe=recipe)
         serializer = RecipeInfaSerializer(recipe)
