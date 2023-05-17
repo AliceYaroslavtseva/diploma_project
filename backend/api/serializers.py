@@ -1,9 +1,5 @@
-import base64
-import os
 import re
 
-import webcolors
-from django.core.files.base import ContentFile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
@@ -13,8 +9,7 @@ from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from users.models import Subscribe, User
-
-"""Users."""
+from api.fields import Hex2NameColor, Base64ImageField
 
 
 class UsersCreateSerializer(UserCreateSerializer):
@@ -75,6 +70,8 @@ class UsersSerializer(UserSerializer):
 
 
 class SubscribeSerializer(UserSerializer):
+    """Сериализатор подписки."""
+
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
@@ -116,37 +113,6 @@ class SubscribeSerializer(UserSerializer):
             return obj.recipes.all()
         else:
             return Recipe.objects.filter(author=obj)
-
-
-"""Recipe."""
-
-
-class Hex2NameColor(serializers.Field):
-    """Сериализатор цвета в тегах."""
-
-    def to_representation(self, value):
-        return value
-
-    def to_internal_value(self, data):
-        try:
-            data = webcolors.hex_to_name(data)
-        except ValueError:
-            raise serializers.ValidationError('Для этого цвета нет имени')
-        # return data
-
-
-class Base64ImageField(serializers.ImageField):
-    """Сериализатор фото в рецептах."""
-
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            img_name = 'image.' + ext
-            img_path = os.path.join('images', img_name)
-            data = ContentFile(base64.b64decode(imgstr), name=img_path)
-
-        return super().to_internal_value(data)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -279,6 +245,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
         )
+    amount = serializers.IntegerField()
 
     class Meta:
         model = IngredientRecipe
@@ -295,7 +262,11 @@ class RecipeGetSerializer(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True)
     author = UsersSerializer(read_only=True)
-    ingredients = SerializerMethodField()
+    ingredients = IngredientRecipeSerializer(
+        many=True,
+        source='ingredientrecipe_set',
+        read_only=True
+    )
     image = Base64ImageField()
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
@@ -314,11 +285,6 @@ class RecipeGetSerializer(serializers.ModelSerializer):
             'is_favorited',
             'is_in_shopping_cart'
         )
-
-    @staticmethod
-    def get_ingredients(obj):
-        ingredients = IngredientRecipe.objects.filter(recipe=obj)
-        return IngredientRecipeSerializer(ingredients, many=True).data
 
     def get_is_favorited(self, obj):
         return (
