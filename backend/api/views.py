@@ -27,7 +27,8 @@ class UsersViewSet(UserViewSet):
 
     queryset = User.objects.all()
     serializer_class = UsersSerializer
-    permission_classes = [IsAuthenticated, ]
+    pagination_class = LimitPagination
+    # permission_classes = [IsAuthenticated, ]
 
     @action(
         detail=True,
@@ -57,10 +58,18 @@ class UsersViewSet(UserViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         subscriptions = Subscribe.objects.filter(
-            user_id=self.request.user
+            user_id = self.request.user.id
             ).values_list('author_id', flat=True)
         context['subscriptions'] = set(subscriptions)
         return context
+
+    def get_permission_classes(self):
+        if self.request.method == 'GET':
+            return AllowAny
+        elif self.request.method == 'POST':
+            return IsAuthenticated
+        else:
+            return []
 
     @action(
         detail=False,

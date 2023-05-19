@@ -130,3 +130,11 @@ dmypy.json
 
 # .idea
 .idea
+frontend/node_modules
+
+# static files
+
+/backend/static/
+/backend/media/
+
+# ssl cerficate
