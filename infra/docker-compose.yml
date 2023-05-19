@@ -4,10 +4,6 @@ services:
 
   db:
     image: postgres:13.0-alpine
-    environment:
-      - POSTGRES_DB: pipelines
-      - POSTGRES_USER: test_user
-      - POSTGRES_PASSWORD: test_user_password
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
