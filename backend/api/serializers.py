@@ -3,14 +3,14 @@ import re
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
+from users.models import Subscribe, User
 
 from api.fields import Base64ImageField, Hex2NameColor
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
-                            Recipe, ShoppingCart, Tag)
-from users.models import Subscribe, User
 
 
 class UsersCreateSerializer(UserCreateSerializer):
@@ -112,8 +112,7 @@ class SubscribeSerializer(UserSerializer):
     def get_queryset(self, obj):
         if hasattr(obj, 'recipes'):
             return obj.recipes.all()
-        else:
-            return Recipe.objects.filter(author=obj)
+        return Recipe.objects.filter(author=obj)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -245,7 +244,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
-        )
+    )
     amount = serializers.IntegerField()
 
     class Meta:
@@ -293,8 +292,8 @@ class RecipeGetSerializer(serializers.ModelSerializer):
             and FavoriteRecipe.objects.filter(
                 user=self.context['request'].user,
                 recipe=obj
-                ).exists()
-            )
+            ).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
         return (

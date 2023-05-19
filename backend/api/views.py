@@ -5,11 +5,14 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
+from users.models import Subscribe, User
 
 from api.filters import RecipeFilter
 from api.paginations import LimitPagination
@@ -17,9 +20,6 @@ from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
                              RecipeSerializer, SubscribeSerializer,
                              TagSerializer, UsersSerializer)
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
-                            Recipe, ShoppingCart, Tag)
-from users.models import Subscribe, User
 
 
 class UsersViewSet(UserViewSet):
@@ -54,8 +54,8 @@ class UsersViewSet(UserViewSet):
                                              author=author)
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -129,8 +129,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk):
         if request.method == 'POST':
             return self.valid_create(FavoriteRecipe, request.user, pk)
-        else:
-            return self.delete_from(FavoriteRecipe, request.user, pk)
+
+        return self.delete_from(FavoriteRecipe, request.user, pk)
 
     @action(
         methods=['post', 'delete'],
@@ -140,8 +140,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.valid_create(ShoppingCart, request.user, pk)
-        else:
-            return self.delete_from(ShoppingCart, request.user, pk)
+
+        return self.delete_from(ShoppingCart, request.user, pk)
 
     @action(
         detail=False,
