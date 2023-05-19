@@ -26,7 +26,7 @@ class UsersCreateSerializer(UserCreateSerializer):
             'password',
             'id'
         )
-    
+
     extra_kwargs = {'password': {'write_only': True}}
 
     def validate_username(self, value):
