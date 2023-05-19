@@ -65,6 +65,14 @@ class UsersViewSet(UserViewSet):
         context['subscriptions'] = set(subscriptions)
         return context
 
+    def get_permission_classes(self):
+        if self.request.method == 'GET':
+            return AllowAny
+        elif self.request.method == 'POST':
+            return IsAuthenticated
+        else:
+            return []
+
     @action(
         detail=False,
         permission_classes=[IsAuthenticated]
