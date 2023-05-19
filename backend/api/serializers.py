@@ -3,14 +3,14 @@ import re
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
-                            Recipe, ShoppingCart, Tag)
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
-from users.models import Subscribe, User
 
 from api.fields import Base64ImageField, Hex2NameColor
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingCart, Tag)
+from users.models import Subscribe, User
 
 
 class UsersCreateSerializer(UserCreateSerializer):

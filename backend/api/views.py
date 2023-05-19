@@ -5,14 +5,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
-                            Recipe, ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
-from users.models import Subscribe, User
 
 from api.filters import RecipeFilter
 from api.paginations import LimitPagination
@@ -20,6 +17,9 @@ from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
                              RecipeSerializer, SubscribeSerializer,
                              TagSerializer, UsersSerializer)
+from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingCart, Tag)
+from users.models import Subscribe, User
 
 
 class UsersViewSet(UserViewSet):
@@ -54,22 +54,16 @@ class UsersViewSet(UserViewSet):
                                              author=author)
             subscription.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         subscriptions = Subscribe.objects.filter(
-            user_id = self.request.user.id
-            ).values_list('author_id', flat=True)
+            user_id=self.request.user.id
+        ).values_list('author_id', flat=True)
         context['subscriptions'] = set(subscriptions)
         return context
-
-    def get_permission_classes(self):
-        if self.request.method == 'GET':
-            return AllowAny
-        elif self.request.method == 'POST':
-            return IsAuthenticated
-        else:
-            return []
 
     @action(
         detail=False,
