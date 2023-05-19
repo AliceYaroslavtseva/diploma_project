@@ -5,6 +5,7 @@ import webcolors
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
+
 class Hex2NameColor(serializers.Field):
     """Сериализатор цвета в тегах."""
 
