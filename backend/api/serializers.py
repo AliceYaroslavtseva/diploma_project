@@ -16,11 +16,6 @@ from api.fields import Base64ImageField, Hex2NameColor
 class UsersCreateSerializer(UserCreateSerializer):
     """Сериализатор для создания пользователя."""
 
-    password = serializers.CharField(
-        style={"input_type": "password"},
-        write_only=True
-    )
-
     class Meta:
         model = User
         fields = (
@@ -31,6 +26,8 @@ class UsersCreateSerializer(UserCreateSerializer):
             'password',
             'id'
         )
+    
+    extra_kwargs = {'password': {'write_only': True}}
 
     def validate_username(self, value):
         if not re.fullmatch(r'^[\w.+-]+', value):
