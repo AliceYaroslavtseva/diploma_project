@@ -38,7 +38,7 @@ from api.fields import Base64ImageField, Hex2NameColor
 #         return value
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class UsersCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
