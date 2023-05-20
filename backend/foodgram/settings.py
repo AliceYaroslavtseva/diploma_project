@@ -185,7 +185,7 @@ DJOSER = {
     },
 
     'PERMISSIONS': {
-        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user': ['api.permissions.AuthorReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
         'token_create': ['rest_framework.permissions.AllowAny']
     },
