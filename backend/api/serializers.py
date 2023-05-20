@@ -13,30 +13,39 @@ from users.models import Subscribe, User
 from api.fields import Base64ImageField, Hex2NameColor
 
 
-class UsersCreateSerializer(UserCreateSerializer):
-    """Сериализатор для создания пользователя."""
+# class UsersCreateSerializer(UserCreateSerializer):
+#     """Сериализатор для создания пользователя."""
 
+#     class Meta:
+#         model = User
+#         fields = (
+#             'email',
+#             'username',
+#             'first_name',
+#             'last_name',
+#             'password',
+#             'id'
+#         )
+
+#     extra_kwargs = {'password': {'write_only': True}}
+
+#     def validate_username(self, value):
+#         if not re.fullmatch(r'^[\w.+-]+', value):
+#             raise serializers.ValidationError('Nickname должен'
+#                                               ' содержать буквы,'
+#                                               'цифры и символы .+-_')
+#         if value == 'me':
+#             raise serializers.ValidationError('Недопустимое имя "me"')
+#         return value
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
-        fields = (
-            'email',
-            'username',
-            'first_name',
-            'last_name',
+        fields = tuple(User.REQUIRED_FIELDS) + (
+            User.USERNAME_FIELD,
             'password',
-            'id'
         )
-
-    extra_kwargs = {'password': {'write_only': True}}
-
-    def validate_username(self, value):
-        if not re.fullmatch(r'^[\w.+-]+', value):
-            raise serializers.ValidationError('Nickname должен'
-                                              ' содержать буквы,'
-                                              'цифры и символы .+-_')
-        if value == 'me':
-            raise serializers.ValidationError('Недопустимое имя "me"')
-        return value
 
 
 class UsersSerializer(UserSerializer):
