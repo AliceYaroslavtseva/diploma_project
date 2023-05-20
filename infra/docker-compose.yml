@@ -1,80 +1,31 @@
-# version: '2.6'
+version: '2.6'
 
-# services:
-
-#   db:
-#     image: postgres:13.0-alpine
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data/
-#     env_file:
-#       - ./.env
-#     restart: always
-
-#   backend:
-#     image: alice08/foodgram_backend:latest
-#     restart: always
-#     volumes:
-#       - static_value:/app/static/
-#       - media_value:/app/media/
-#       - docs:/app/api/docs/
-#     depends_on:
-#       - db
-#     env_file:
-#       - ./.env
-
-#   frontend:
-#     image: alice08/foodgram_frontend:latest
-#     volumes:
-#       - ../frontend/:/app/result_build/
-
-#   nginx:
-#     image: nginx:1.21.3-alpine
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-#       - ../frontend/build:/usr/share/nginx/html/
-#       - docs:/usr/share/nginx/html/api/docs/
-#       - static_value:/var/html/static/
-#       - media_value:/var/html/media/
-#     depends_on:
-#       - backend
-#     restart: always
-
-# volumes:
-#   static_value:
-#   media_value:
-#   postgres_data:
-#   docs:
-
-version: '3.3'
 services:
 
   db:
     image: postgres:13.0-alpine
     volumes:
-      - db_value:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    restart: always
 
   backend:
-    image: vladislavpronin/foodgram_backend:latest
+    image: alice08/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
+      - docs:/app/api/docs/
     depends_on:
       - db
     env_file:
       - ./.env
 
   frontend:
-    image: vladislavpronin/foodgram_frontend:latest
+    image: alice08/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
-    depends_on:
-      - backend
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -83,14 +34,62 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
+      - docs:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/static/
       - media_value:/var/html/media/
-      - ../frontend/:/app/result_build/
     depends_on:
       - backend
+    restart: always
 
 volumes:
-  db_value:
   static_value:
   media_value:
+  postgres_data:
+  docs:
+
+# version: '3.3'
+# services:
+
+#   db:
+#     image: postgres:13.0-alpine
+#     volumes:
+#       - db_value:/var/lib/postgresql/data/
+#     env_file:
+#       - ./.env
+
+#   backend:
+#     image: vladislavpronin/foodgram_backend:latest
+#     restart: always
+#     volumes:
+#       - static_value:/app/static/
+#       - media_value:/app/media/
+#     depends_on:
+#       - db
+#     env_file:
+#       - ./.env
+
+#   frontend:
+#     image: vladislavpronin/foodgram_frontend:latest
+#     volumes:
+#       - ../frontend/:/app/result_build/
+#     depends_on:
+#       - backend
+
+#   nginx:
+#     image: nginx:1.21.3-alpine
+#     ports:
+#       - "80:80"
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#       - ../frontend/build:/usr/share/nginx/html/
+#       - ../docs/:/usr/share/nginx/html/api/docs/
+#       - static_value:/var/html/static/
+#       - media_value:/var/html/media/
+#       - ../frontend/:/app/result_build/
+#     depends_on:
+#       - backend
+
+# volumes:
+#   db_value:
+#   static_value:
+#   media_value:
