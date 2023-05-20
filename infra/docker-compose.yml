@@ -53,12 +53,15 @@ services:
   db:
     image: postgres:13.0-alpine
     volumes:
-      - db_value:/var/lib/postgresql/data/
+      - ./db_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
 
   backend:
     image: alice08/foodgram_backend:latest
+    # build:
+    #   context: ../backend
+    #   dockerfile: Dockerfile
     restart: always
     volumes:
       - static_value:/app/static/
@@ -70,6 +73,9 @@ services:
 
   frontend:
     image: alice08/foodgram_frontend:latest
+    # build:
+    #   context: ../frontend
+    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
