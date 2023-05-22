@@ -1,5 +1,5 @@
 import base64
-import os
+# import os
 
 import webcolors
 from django.core.files.base import ContentFile
