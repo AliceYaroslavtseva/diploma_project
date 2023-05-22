@@ -55,6 +55,8 @@ class UsersViewSet(UserViewSet):
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def get_serializer_context(self):
+        if self.request.path == '/api/users/' and self.request.method == 'POST':
+            return
         context = super().get_serializer_context()
         subscriptions = Subscribe.objects.filter(
             user=self.request.user

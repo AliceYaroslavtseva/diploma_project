@@ -44,6 +44,7 @@ class IngredientFilter(FilterSet):
 
 
 class RecipeFilter(FilterSet):
+    author = filters.NumberFilter(field_name='author_id', lookup_expr='exact')
     tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
