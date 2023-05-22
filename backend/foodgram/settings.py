@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
 
-    # 'corsheaders',
     'recipes',
     'users',
     'api'
@@ -63,7 +62,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -184,12 +182,6 @@ DJOSER = {
         'user': 'api.serializers.UsersSerializer',
         'current_user': 'api.serializers.UsersSerializer',
     },
-
-    # 'PERMISSIONS': {
-    #     'user': ['api.permissions.AuthorReadOnly'],
-    #     'user_list': ['rest_framework.permissions.AllowAny'],
-    #     'token_create': ['rest_framework.permissions.AllowAny']
-    # },
 
     'PERMISSIONS': {
         'set_password': ['rest_framework.permissions.IsAuthenticated'],

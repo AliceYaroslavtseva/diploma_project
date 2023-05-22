@@ -69,12 +69,12 @@ class UsersViewSet(UserViewSet):
     def subscriptions(self, request):
         user = request.user
         queryset = User.objects.filter(subscribing__user=user)
-        pages = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(pages,
+        # pages = self.paginate_queryset(queryset)
+        serializer = SubscribeSerializer(queryset,
                                          many=True,
                                          context={'request': request})
-        return self.get_paginated_response(serializer.data)
-
+        # return self.get_paginated_response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class IngredientViewSet(viewsets.ModelViewSet):
     """Вьюсет ингредиетов."""
@@ -98,7 +98,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для создания/удаления рецептов, избранных и корзины."""
 
     queryset = Recipe.objects.all()
-    # serializer_class = RecipeSerializer
     permission_classes = [AuthorReadOnly]
     pagination_class = LimitPagination
     filter_backends = [DjangoFilterBackend]
