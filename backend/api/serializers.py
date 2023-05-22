@@ -4,6 +4,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework.serializers import ImageField
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
                             Recipe, ShoppingCart, Tag)
 from rest_framework import serializers, status
@@ -271,7 +272,7 @@ class RecipeGetSerializer(serializers.ModelSerializer):
         source='ingredientrecipe_set',
         read_only=True
     )
-    image = Base64ImageField(max_length=None)
+    image = ImageField(max_length=None)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
