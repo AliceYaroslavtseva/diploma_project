@@ -69,13 +69,17 @@ class UsersViewSet(UserViewSet):
     def subscriptions(self, request):
         user = request.user
         queryset = User.objects.filter(subscribing__user=user)
-        # pages = self.paginate_queryset(queryset)
+        pages = self.paginate_queryset(queryset)
+        print(pages)
+        if pages is not None:
+            serializer = self.get_serializer(pages, many=True,
+                                             context={'request': request})
+            return self.get_paginated_response(serializer.data)
         serializer = SubscribeSerializer(queryset,
                                          many=True,
                                          context={'request': request})
-        # return self.get_paginated_response(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
+        print(serializer.data)
+        return Response(serializer.data)
 
 class IngredientViewSet(viewsets.ModelViewSet):
     """Вьюсет ингредиетов."""
