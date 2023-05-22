@@ -36,11 +36,12 @@ User = get_user_model()
 
 
 class IngredientFilter(FilterSet):
-    name = filters.CharFilter(lookup_expr='startswith')
+    name = filters.CharFilter(lookup_expr='istartswith')
 
     class Meta:
         model = Ingredient
-        fields = ['name']
+        fields = ('name',)
+
 
 
 class RecipeFilter(FilterSet):
