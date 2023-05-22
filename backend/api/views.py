@@ -27,7 +27,6 @@ class UsersViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
     pagination_class = LimitPagination
-    # permission_classes = [IsAuthenticated, ]
 
     @action(
         detail=True,
@@ -40,11 +39,9 @@ class UsersViewSet(UserViewSet):
         author = get_object_or_404(User, id=author_id)
 
         if request.method == 'POST':
-            serializer = SubscribeSerializer(author,
-                                             data=request.data,
-                                             context={"request": request})
-            serializer.is_valid(raise_exception=True)
             Subscribe.objects.create(user=user, author=author)
+            serializer = SubscribeSerializer(author,
+                                             context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
@@ -59,19 +56,10 @@ class UsersViewSet(UserViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         subscriptions = Subscribe.objects.filter(
-            # user_id=self.request.user.id
-            user=self.request.user
+            user_id=self.request.user.id
         ).values_list('author_id', flat=True)
         context['subscriptions'] = set(subscriptions)
         return context
-
-    def get_permission_classes(self):
-        if self.request.method == 'GET':
-            return AllowAny
-        elif self.request.method == 'POST':
-            return IsAuthenticated
-        else:
-            return []
 
     @action(
         detail=False,

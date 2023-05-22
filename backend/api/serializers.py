@@ -12,32 +12,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from users.models import Subscribe, User
 
-# class UsersCreateSerializer(UserCreateSerializer):
-#     """Сериализатор для создания пользователя."""
-
-#     class Meta:
-#         model = User
-#         fields = (
-#             'email',
-#             'username',
-#             'first_name',
-#             'last_name',
-#             'password',
-#             'id'
-#         )
-
-#     extra_kwargs = {'password': {'write_only': True}}
-
-#     def validate_username(self, value):
-#         if not re.fullmatch(r'^[\w.+-]+', value):
-#             raise serializers.ValidationError('Nickname должен'
-#                                               ' содержать буквы,'
-#                                               'цифры и символы .+-_')
-#         if value == 'me':
-#             raise serializers.ValidationError('Недопустимое имя "me"')
-#         return value
-
-
 class UsersCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
@@ -80,10 +54,19 @@ class SubscribeSerializer(UserSerializer):
 
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
+    is_subscribed = SerializerMethodField()
 
-    class Meta(UsersSerializer.Meta):
-        fields = UsersSerializer.Meta.fields + (
-            'recipes_count', 'recipes'
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'id',
+            'is_subscribed',
+            'recipes_count',
+            'recipes'
         )
 
     def validate(self, data):
@@ -100,6 +83,16 @@ class SubscribeSerializer(UserSerializer):
                 code=status.HTTP_400_BAD_REQUEST
             )
         return data
+
+    def get_is_subscribed(self, object):
+        """Сработало только после описания случаев возврата false"""
+        author = self.instance
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        if Subscribe.objects.filter(author=author, user=user).exists():
+            return True
+        return False
 
     def get_recipes_count(self, obj):
         queryset = self.get_queryset(obj)
@@ -272,7 +265,6 @@ class RecipeGetSerializer(serializers.ModelSerializer):
         source='ingredientrecipe_set',
         read_only=True
     )
-    image = ImageField()
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
@@ -357,8 +349,6 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
 
 class RecipeInfaSerializer(serializers.ModelSerializer):
     """Сериализатор информации о рецепте для списков."""
-
-    image = ImageField()
 
     class Meta:
         model = Recipe
