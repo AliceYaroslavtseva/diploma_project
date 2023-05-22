@@ -78,7 +78,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker-compose stop
-            sudo docker-compose rm backend
+            sudo docker-compose rm -f backend
+            sudo docker image rm alice08/foodgram_backend
             sudo docker-compose down
             sudo rm .env
             touch .env
