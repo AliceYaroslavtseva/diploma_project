@@ -5,7 +5,7 @@ from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
                              RecipeSerializer, SubscribeSerializer,
-                             TagSerializer, UsersSerializer, 
+                             TagSerializer, UsersSerializer,
                              RecipeGetSerializer)
 from django.db.models import Sum
 from django.http import HttpResponse
