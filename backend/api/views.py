@@ -71,7 +71,8 @@ class UsersViewSet(UserViewSet):
         queryset = User.objects.filter(subscribing__user=user)
         pages = self.paginate_queryset(queryset)
         if pages is not None:
-            serializer = self.get_serializer(pages, many=True,
+            serializer = SubscribeSerializer(pages, 
+                                             many=True,
                                              context={'request': request})
             return self.get_paginated_response(serializer.data)
         serializer = SubscribeSerializer(queryset,
