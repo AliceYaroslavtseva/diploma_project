@@ -1,9 +1,8 @@
 # import re
-from api.fields import Hex2NameColor
+from api.fields import Base64ImageField, Hex2NameColor
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
-from api.fields import Base64ImageField
 # from rest_framework.serializers import ImageField
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
                             Recipe, ShoppingCart, Tag)

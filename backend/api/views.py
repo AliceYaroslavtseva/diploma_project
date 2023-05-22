@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from api.filters import RecipeFilter, IngredientFilter
+from api.filters import IngredientFilter, RecipeFilter
 from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
-from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
-                             RecipeSerializer, SubscribeSerializer,
-                             TagSerializer, UsersSerializer,
-                             RecipeGetSerializer)
+from api.serializers import (IngredientSerializer, RecipeGetSerializer,
+                             RecipeInfaSerializer, RecipeSerializer,
+                             SubscribeSerializer, TagSerializer,
+                             UsersSerializer)
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -71,7 +71,7 @@ class UsersViewSet(UserViewSet):
         queryset = User.objects.filter(subscribing__user=user)
         pages = self.paginate_queryset(queryset)
         if pages is not None:
-            serializer = SubscribeSerializer(pages, 
+            serializer = SubscribeSerializer(pages,
                                              many=True,
                                              context={'request': request})
             return self.get_paginated_response(serializer.data)
