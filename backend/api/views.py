@@ -5,7 +5,8 @@ from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
                              RecipeSerializer, SubscribeSerializer,
-                             TagSerializer, UsersSerializer, RecipeGetSerializer)
+                             TagSerializer, UsersSerializer, 
+                             RecipeGetSerializer)
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -107,7 +108,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             return RecipeGetSerializer
         return RecipeSerializer
-
 
     def valid_create(self, model, user, pk):
         recipe = get_object_or_404(Recipe, id=pk)
