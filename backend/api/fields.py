@@ -1,7 +1,7 @@
 # import base64
 # import os
 import webcolors
-from django.core.files.base import ContentFile
+# from django.core.files.base import ContentFile
 from rest_framework import serializers
 
 
