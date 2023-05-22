@@ -80,8 +80,8 @@ class SubscribeSerializer(UserSerializer):
     recipes_count = SerializerMethodField()
     recipes = SerializerMethodField()
 
-    class Meta(UserSerializer.Meta):
-        fields = UserSerializer.Meta.fields + (
+    class Meta(UsersSerializer.Meta):
+        fields = UsersSerializer.Meta.fields + (
             'recipes_count', 'recipes'
         )
 
