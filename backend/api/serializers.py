@@ -87,7 +87,7 @@ class SubscribeSerializer(UserSerializer):
 
     def get_is_subscribed(self, object):
         """Сработало только после описания случаев возврата false"""
-        author = self.instance
+        author = object
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
