@@ -20,14 +20,25 @@ class Hex2NameColor(serializers.Field):
 
 
 class Base64ImageField(serializers.ImageField):
-    """Сериализатор фото в рецептах."""
-
+    """Кастомное поле для кодирования изображения в base64."""
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
             ext = format.split('/')[-1]
-            img_name = 'image.' + ext
-            img_path = os.path.join('images', img_name)
-            data = ContentFile(base64.b64decode(imgstr), name=img_path)
+            data = ContentFile(base64.b64decode(imgstr), name='image.' + ext)
 
         return super().to_internal_value(data)
+
+
+# class Base64ImageField(serializers.ImageField):
+#     """Сериализатор фото в рецептах."""
+
+#     def to_internal_value(self, data):
+#         if isinstance(data, str) and data.startswith('data:image'):
+#             format, imgstr = data.split(';base64,')
+#             ext = format.split('/')[-1]
+#             img_name = 'image.' + ext
+#             img_path = os.path.join('images', img_name)
+#             data = ContentFile(base64.b64decode(imgstr), name=img_path)
+
+#         return super().to_internal_value(data)
