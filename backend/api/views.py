@@ -76,6 +76,7 @@ class UsersViewSet(UserViewSet):
         # return self.get_paginated_response(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class IngredientViewSet(viewsets.ModelViewSet):
     """Вьюсет ингредиетов."""
 
