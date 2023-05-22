@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from api.filters import RecipeFilter
+from api.filters import RecipeFilter, IngredientFilter
 from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
@@ -85,6 +85,8 @@ class IngredientViewSet(viewsets.ModelViewSet):
     """Вьюсет ингредиетов."""
 
     queryset = Ingredient.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = IngredientFilter
     serializer_class = IngredientSerializer
     permission_classes = [AllowAny]
     pagination_class = None
