@@ -5,7 +5,7 @@ from api.paginations import LimitPagination
 from api.permissions import AuthorReadOnly
 from api.serializers import (IngredientSerializer, RecipeInfaSerializer,
                              RecipeSerializer, SubscribeSerializer,
-                             TagSerializer, UsersSerializer)
+                             TagSerializer, UsersSerializer, RecipeGetSerializer)
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -97,11 +97,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Вьюсет для создания/удаления рецептов, избранных и корзины."""
 
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
+    # serializer_class = RecipeSerializer
     permission_classes = [AuthorReadOnly]
     pagination_class = LimitPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeGetSerializer
+        return RecipeSerializer
+
 
     def valid_create(self, model, user, pk):
         recipe = get_object_or_404(Recipe, id=pk)
