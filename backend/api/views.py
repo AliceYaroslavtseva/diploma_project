@@ -59,6 +59,7 @@ class UsersViewSet(UserViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         subscriptions = Subscribe.objects.filter(
+            user=self.request.user,
             user_id=self.request.user.id
         ).values_list('author_id', flat=True)
         context['subscriptions'] = set(subscriptions)
