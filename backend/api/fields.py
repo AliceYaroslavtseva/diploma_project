@@ -16,6 +16,7 @@ class Hex2NameColor(serializers.Field):
         except ValueError:
             raise serializers.ValidationError('Для этого цвета нет имени')
 
+
 class Base64ImageField(serializers.ImageField):
     """Кастомное поле для кодирования изображения в base64."""
     def to_internal_value(self, data):
