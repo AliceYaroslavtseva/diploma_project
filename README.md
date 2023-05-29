@@ -163,8 +163,10 @@ API фреймворк: Django REST (контейнер backend)
 ---
 ## 7. Об авторе <a id=7></a>
 
-Ярославцева Алиса Владимировна
-Python-разработчик (Backend)  
-Россия, г. Тольятти 
-E-mail: yaroslavtsevaalisa@yandex.ru  
-Telegram: @hellfoxalice
+  - Ярославцева Алиса Владимирова
+  - Python-разработчик (Backend)
+  - Россия, г. Тольятти
+  - E-mail: yaroslavtsevaalisa@yandex.ru 
+  - Telegram: @hellfoxalice
+---
+  Наставник: Андрей Беренда
